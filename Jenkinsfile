@@ -8,8 +8,8 @@ pipeline {
         }
         stage('Deploy') {
             steps {
-                sh "sudo mv target/spring*.jar /home/vagrant/prod/pet-clinic.jar"
-                sh "sudo systemctl restart pet-clinic"
+                sh "sudo mv target/spring*.jar /home/vagrant/prod/petclinic.jar"
+                sh "sudo systemctl restart petclinic"
             }
         }
     }
