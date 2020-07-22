@@ -1,14 +1,24 @@
 pipeline {
-    agent { any }
+    agent any
     stages {
-        stage ('Checkout') {
-          steps {
-            git 'https://github.com/kh3phr3n/spring-petclinic/spring-petclinic.git'
-          }
-        }
         stage('Build') {
             steps {
-                sh 'mvn clean package'
+                sh 'docker build -t petclinic .'
+            }
+        }
+        stage('Test') {
+            steps {
+               jacoco( 
+                  execPattern: 'target/*.exec',
+                  classPattern: 'target/classes',
+                  sourcePattern: 'src/main/java',
+                  exclusionPattern: 'src/test*'
+                  )
+            }
+        }
+        stage('Deploy') {
+            steps {
+                sh 'docker run -d -p 8081:8081 petclinic'
             }
         }
     }
