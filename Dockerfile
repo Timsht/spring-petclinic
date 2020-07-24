@@ -1,13 +1,17 @@
-# Development build
-FROM openjdk:8-jdk-alpine AS development
-WORKDIR /usr/src/app
-COPY . ./
-RUN ./mvnw package
+FROM openjdk:11.0.5-jdk-slim as BUILDER
+WORKDIR /petclinic
+COPY .mvn /petclinic/.mvn
+COPY pom.xml /petclinic/pom.xml
+COPY mvnw /petclinic/mvnw
+RUN chmod +x mvnw
+RUN ./mvnw dependency:go-offline
+COPY src /petclinic/src
+RUN ./mvnw package -DskipTests
 
-
-# Production build
-FROM openjdk:8-jdk-alpine AS production
+# Start with a base image containing Java runtime
+FROM openjdk:11-jre-slim
+COPY --from=BUILDER /petclinic/target/*.jar /spring-petclinic.jar
+# Make port 8080 available to the world outside this container
 EXPOSE 8081
-WORKDIR /usr/src/app
-COPY --from=development /usr/src/app/target/*.jar ./petclinic.jar
-CMD ["java", "-jar", "/usr/src/app/petclinic.jar", "--server.port=8081"]
+# Run the jar file
+ENTRYPOINT ["java", "-jar", "/spring-petclinic.jar", "--server.port=8081", "--spring.profiles.active=mysql"]
