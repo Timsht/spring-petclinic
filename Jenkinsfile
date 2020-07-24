@@ -18,7 +18,7 @@ pipeline {
         }
         stage('Deploy') {
             steps {
-                sh 'docker-compose -f ./spring-petlinic/docker-compose-petclinic-mysql up'
+                sh 'docker-compose -f ~/data/spring-petlinic/docker-compose-petclinic-mysql up'
             }
         }
     }
