@@ -18,7 +18,7 @@ pipeline {
         }
         stage('Deploy') {
             steps {
-                sh 'docker-compose -f /docker-compose-petclinic-mysql up'
+                sh 'docker-compose up'
             }
         }
     }
