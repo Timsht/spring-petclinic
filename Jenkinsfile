@@ -18,7 +18,7 @@ pipeline {
         }
         stage('Deploy') {
             steps {
-                sh 'docker-compose -f docker-compose-petclinic-mysql.yaml up'
+                sh 'docker-compose -f docker-compose-petclinic-mysql.yaml up -d'
             }
         }
     }
